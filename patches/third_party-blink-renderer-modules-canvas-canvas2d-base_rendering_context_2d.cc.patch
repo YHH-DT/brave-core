@@ -1,20 +1,20 @@
 diff --git a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc b/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc
-index c12b280843456c2c81df2bf598b5edb427c345cc..b39b8b82f8683f8ce044a5b3175590c37e677928 100644
+index 53abce6c5b1987cd7be5a9464b771f37a4199aae..3ae760db0f879e153912d161ed1ada8bab7c209b 100644
 --- a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc
 +++ b/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc
-@@ -1609,6 +1609,7 @@ ImageData* BaseRenderingContext2D::createImageData(
+@@ -1637,6 +1637,7 @@ ImageData* BaseRenderingContext2D::getImageData(
  }
  
- ImageData* BaseRenderingContext2D::getImageData(
+ ImageData* BaseRenderingContext2D::getImageDataInternal(
 +    BRAVE_GET_IMAGE_DATA_PARAMS
      int sx,
      int sy,
      int sw,
-@@ -1696,6 +1697,7 @@ ImageData* BaseRenderingContext2D::getImageData(
-     return nullptr;
-   }
+@@ -1780,6 +1781,7 @@ ImageData* BaseRenderingContext2D::getImageDataInternal(
  
-+  BRAVE_GET_IMAGE_DATA
-   bool may_have_stray_area =
-       IsAccelerated()  // GPU readback may fail silently.
-       || StaticBitmapImage::MayHaveStrayArea(snapshot, image_data_rect);
+   // Read pixels into |contents|.
+   if (snapshot) {
++    BRAVE_GET_IMAGE_DATA
+     const bool read_pixels_successful =
+         snapshot->PaintImageForCurrentFrame().readPixels(
+             image_info, contents.Data(), image_info.minRowBytes(), sx, sy);
