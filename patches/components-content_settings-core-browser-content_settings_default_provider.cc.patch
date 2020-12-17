@@ -1,8 +1,8 @@
 diff --git a/components/content_settings/core/browser/content_settings_default_provider.cc b/components/content_settings/core/browser/content_settings_default_provider.cc
-index 6e67b3720ea0971b38ffec7a45049f52431cdd3c..64c33508a2de68234a88b64d94743c5e5eaa48e8 100644
+index 301e38ca2337c5596a197c6d512a52cf0644cfb2..ce843ab34142af78d4fa5af1978f7719f9ffbabb 100644
 --- a/components/content_settings/core/browser/content_settings_default_provider.cc
 +++ b/components/content_settings/core/browser/content_settings_default_provider.cc
-@@ -283,6 +283,7 @@ std::unique_ptr<RuleIterator> DefaultProvider::GetRuleIterator(
+@@ -284,6 +284,7 @@ std::unique_ptr<RuleIterator> DefaultProvider::GetRuleIterator(
      return nullptr;
  
    base::AutoLock lock(lock_);
@@ -10,7 +10,7 @@ index 6e67b3720ea0971b38ffec7a45049f52431cdd3c..64c33508a2de68234a88b64d94743c5e
    auto it = default_settings_.find(content_type);
    if (it == default_settings_.end()) {
      NOTREACHED();
-@@ -430,6 +431,7 @@ void DefaultProvider::DiscardOrMigrateObsoletePreferences() {
+@@ -431,6 +432,7 @@ void DefaultProvider::DiscardOrMigrateObsoletePreferences() {
    }
    prefs_->ClearPref(kDeprecatedNativeFileSystemWriteGuardDefaultPref);
  #endif  // !defined(OS_ANDROID)
