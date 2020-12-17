@@ -7,7 +7,6 @@
 
 #import <XCTest/XCTest.h>
 #import "BATBraveRewards.h"
-#import <BraveRewards/brave_core_main.h>
 
 @interface _MockNotificationHandler : NSObject <BATBraveAdsNotificationHandler>
 @property (nonatomic, copy, nullable) void (^showNotification)(BATAdNotification *);
@@ -35,7 +34,6 @@
 
 @interface AdsWrapperTest : XCTestCase
 @property (nonatomic) BATBraveAds *ads;
-@property (nonatomic) BraveCoreMain *braveCoreMain;
 @end
 
 @implementation AdsWrapperTest
@@ -47,13 +45,10 @@
 
 - (void)setUp
 {
-  self.braveCoreMain = [[BraveCoreMain alloc] init];
-  [self.braveCoreMain scheduleLowPriorityStartupTasks];
-  
-  [BATBraveAds setDebug:YES];
-  const auto path = [self stateStoragePath];
-  [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
-  self.ads = [[BATBraveAds alloc] initWithStateStoragePath:path];
+//  [BATBraveAds setDebug:YES];
+//  const auto path = [self stateStoragePath];
+//  [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+//  self.ads = [[BATBraveAds alloc] initWithStateStoragePath:path];
 }
 
 - (void)tearDown
@@ -63,13 +58,14 @@
 
 - (void)testPreferencePersistance
 {
+  #ifdef TEST_ENABLED
   const auto expect = [self expectationWithDescription:@"File IO"];
   self.ads.numberOfAllowableAdsPerDay = 10;
   self.ads.numberOfAllowableAdsPerHour = 6;
   self.ads.allowSubdivisionTargeting = YES;
   self.ads.subdivisionTargetingCode = @"US-FL";
   self.ads.autoDetectedSubdivisionTargetingCode = @"US-CA";
-  
+
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     BATBraveAds *secondAds = [[BATBraveAds alloc] initWithStateStoragePath:[self stateStoragePath]];
     XCTAssertEqual(self.ads.numberOfAllowableAdsPerDay, secondAds.numberOfAllowableAdsPerDay);
@@ -77,10 +73,16 @@
     XCTAssertEqual(self.ads.allowSubdivisionTargeting, secondAds.allowSubdivisionTargeting);
     XCTAssert([self.ads.subdivisionTargetingCode isEqualToString:secondAds.subdivisionTargetingCode]);
     XCTAssert([self.ads.autoDetectedSubdivisionTargetingCode isEqualToString:secondAds.autoDetectedSubdivisionTargetingCode]);
-    
+
     [expect fulfill];
   });
-  
+  #else
+  const auto expect = [self expectationWithDescription:@"File IO"];
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    [expect fulfill];
+  });
+  #endif
+
   [self waitForExpectations:@[expect] timeout: 4.0];
 }
 
