@@ -8,22 +8,18 @@
 
 #include <string>
 
-#include "base/feature_list.h"
+#include "base/optional.h"
 
 namespace ads {
 namespace features {
 
-extern const base::Feature kContextualAdsControl;
+bool HasActiveStudy();
 
-bool IsPageProbabilitiesStudyActive();
+base::Optional<std::string> GetStudy();
 
-std::string GetPageProbabilitiesStudy();
+base::Optional<std::string> GetGroup();
 
-std::string GetPageProbabilitiesFieldTrialGroup();
-
-int GetPageProbabilitiesHistorySize();
-
-void LogPageProbabilitiesStudy();
+void Log();
 
 }  // namespace features
 }  // namespace ads
