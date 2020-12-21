@@ -272,6 +272,8 @@ void AdsServiceImpl::SetAllowConversionTracking(
 
 void AdsServiceImpl::SetAdsPerHour(
     const uint64_t ads_per_hour) {
+  DCHECK(ads_per_hour >= ads::kMinimumAdNotificationsPerHour &&
+      ads_per_hour <= ads::kMaximumAdNotificationsPerHour);
   SetUint64Pref(ads::prefs::kAdsPerHour, ads_per_hour);
 }
 
@@ -509,12 +511,8 @@ bool AdsServiceImpl::IsEnabled() const {
 
 uint64_t AdsServiceImpl::GetAdsPerHour() const {
   return base::ClampToRange(GetUint64Pref(ads::prefs::kAdsPerHour),
-      static_cast<uint64_t>(1), static_cast<uint64_t>(5));
-}
-
-uint64_t AdsServiceImpl::GetAdsPerDay() const {
-  return base::ClampToRange(GetUint64Pref(ads::prefs::kAdsPerDay),
-      static_cast<uint64_t>(1), static_cast<uint64_t>(40));
+      static_cast<uint64_t>(ads::kMinimumAdNotificationsPerHour),
+          static_cast<uint64_t>(ads::kMaximumAdNotificationsPerHour));
 }
 
 bool AdsServiceImpl::ShouldAllowAdsSubdivisionTargeting() const {
@@ -1384,14 +1382,8 @@ bool AdsServiceImpl::MigratePrefs(
 }
 
 void AdsServiceImpl::MigratePrefsVersion1To2() {
-  // Unlike Muon, ads per day are not configurable in the UI so we can safely
-  // migrate to the new value
-
-  #if defined(OS_ANDROID)
-    SetUint64Pref(ads::prefs::kAdsPerDay, 12);
-  #else
-    SetUint64Pref(ads::prefs::kAdsPerDay, 20);
-  #endif
+  // Intentionally empty as we no longer need to migrate ads per day due to
+  // deprecation of prefs::kAdsPerDay
 }
 
 void AdsServiceImpl::MigratePrefsVersion2To3() {
@@ -1478,10 +1470,8 @@ void AdsServiceImpl::MigratePrefsVersion4To5() {
 }
 
 void AdsServiceImpl::MigratePrefsVersion5To6() {
-  // Unlike Muon, ads per day are not configurable in the UI so we can safely
-  // migrate to the new value
-
-  SetUint64Pref(ads::prefs::kAdsPerDay, 20);
+  // Intentionally empty as we no longer need to migrate ads per day due to
+  // deprecation of prefs::kAdsPerDay
 }
 
 void AdsServiceImpl::MigratePrefsVersion6To7() {
@@ -1555,10 +1545,8 @@ void AdsServiceImpl::MigratePrefsVersion7To8() {
 }
 
 void AdsServiceImpl::MigratePrefsVersion8To9() {
-  // Unlike Muon, ads per day are not configurable in the UI so we can safely
-  // migrate to the new value
-
-  SetUint64Pref(ads::prefs::kAdsPerDay, 40);
+  // Intentionally empty as we no longer need to migrate ads per day due to
+  // deprecation of prefs::kAdsPerDay
 }
 
 int AdsServiceImpl::GetPrefsVersion() const {

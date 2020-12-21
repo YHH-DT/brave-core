@@ -64,7 +64,6 @@
 - (void)testPreferencePersistance
 {
   const auto expect = [self expectationWithDescription:@"File IO"];
-  self.ads.numberOfAllowableAdsPerDay = 10;
   self.ads.numberOfAllowableAdsPerHour = 6;
   self.ads.allowSubdivisionTargeting = YES;
   self.ads.subdivisionTargetingCode = @"US-FL";
@@ -72,7 +71,6 @@
   
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     BATBraveAds *secondAds = [[BATBraveAds alloc] initWithStateStoragePath:[self stateStoragePath]];
-    XCTAssertEqual(self.ads.numberOfAllowableAdsPerDay, secondAds.numberOfAllowableAdsPerDay);
     XCTAssertEqual(self.ads.numberOfAllowableAdsPerHour, secondAds.numberOfAllowableAdsPerHour);
     XCTAssertEqual(self.ads.allowSubdivisionTargeting, secondAds.allowSubdivisionTargeting);
     XCTAssert([self.ads.subdivisionTargetingCode isEqualToString:secondAds.subdivisionTargetingCode]);
